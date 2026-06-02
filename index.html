@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kylie's Birthday Scratch & Win</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,700;1,900&family=Pacifico&family=Cormorant+Garamond:ital,wght@1,300;1,400;1,600&family=Dancing+Script:wght@500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --pink:       #e8194f;
+    --magenta:    #e0289a;
+    --hot:        #f0178a;
+    --purple:     #8b1fc8;
+    --cream:      #f5e8d0;
+    --black:      #1a1a1a;
+    --gold:       #d4af37;
+    --white:      #ffffff;
+  }
+
+  html, body {
+    min-height: 100%;
+    font-family: 'Inter', sans-serif;
+    background: #f0e8f5;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 0 60px;
+    position: relative;
+    overflow-x: hidden;
+    background: linear-gradient(160deg, #f7e8f8 0%, #f0dcf5 30%, #e8d0f0 60%, #f5e0ea 100%);
+    min-height: 100vh;
+  }
+
+  #confetti-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  .page {
+    width: 100%;
+    max-width: 680px;
+    padding: 0 16px;
+  }
+
+  /* ── POSTER TOP ── */
+  .poster-top {
+    border-radius: 20px 20px 0 0;
+    border-left: 3px solid var(--black);
+    border-right: 3px solid var(--black);
+    border-top: 3px solid var(--black);
+    padding: 28px 28px 26px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-top: 32px;
+    background: linear-gradient(145deg, #e8194f 0%, #d4168c 40%, #9b1fd4 100%);
+  }
+
+  .poster-top::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 1px,
+      transparent 1px, transparent 9px
+    );
+    pointer-events: none;
+  }
+
+  /* ── BORDER DECORATION — option selector ── */
+  /* Option A: Polka dots row */
+  .border-dots {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .border-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.35);
+    flex-shrink: 0;
+  }
+
+  /* Option B: Star confetti row */
+  .border-stars {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    font-size: 12px;
+  }
+  .border-star { color: rgba(255,255,255,0.45); }
+
+  /* Option C: Gold diamond gems row */
+  .border-gems {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    gap: 0;
+  }
+  .border-gem {
+    width: 8px; height: 8px;
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+  .gem-gold { background: rgba(212,175,55,0.7); }
+  .gem-white { background: rgba(255,255,255,0.35); }
+  .gem-line { flex: 1; height: 1px; background: rgba(255,255,255,0.15); }
+
+  .poster-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 10px;
+  }
+
+  .poster-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(54px, 13vw, 76px);
+    font-weight: 900;
+    font-style: italic;
+    color: var(--white);
+    line-height: 0.88;
+    margin-bottom: 14px;
+    text-shadow: 3px 5px 0 rgba(0,0,0,0.18);
+    position: relative;
+  }
+
+  /* Script font options shown inline for review */
+  .poster-script {
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(20px, 4.5vw, 26px);
+    font-weight: 500;
+    color: rgba(255,255,255,0.88);
+    margin-bottom: 14px;
+    position: relative;
+    line-height: 1.2;
+  }
+
+  /* ── PERFORATIONS ── */
+  .perforations {
+    width: 100%;
+    height: 22px;
+    background: transparent;
+    border-left: 3px solid var(--black);
+    border-right: 3px solid var(--black);
+    position: relative;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+  }
+
+  .perf-inner {
+    width: 100%;
+    height: 22px;
+    background: linear-gradient(160deg, #f7e8f8 0%, #f0dcf5 30%, #e8d0f0 60%, #f5e0ea 100%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 -4px;
+    position: relative;
+  }
+
+  .perf-inner::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 2px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--black) 0, var(--black) 7px,
+      transparent 7px, transparent 14px
+    );
+  }
+
+  .perf-hole {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: linear-gradient(160deg, #f7e8f8 0%, #f0dcf5 50%, #e8d0f0 100%);
+    border: 2px solid var(--black);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+    margin: 0 -1px;
+  }
+
+  /* ── INSERT ── */
+  .insert-wrap {
+    background: var(--white);
+    border-left: 3px solid var(--black);
+    border-right: 3px solid var(--black);
+    padding: 24px 22px 20px;
+  }
+
+  .insert-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #bbb;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  .progress-row {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .prog-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: #e0d8cc;
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .prog-dot.done {
+    background: var(--hot);
+    transform: scale(1.25);
+  }
+
+  .panels-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .panel-wrap {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 1;
+    cursor: crosshair;
+    user-select: none;
+    touch-action: none;
+    border: 2px solid var(--black);
+  }
+
+  /* Prize visible underneath from the start */
+  .panel-reveal {
+    position: absolute;
+    inset: 0;
+    background: var(--cream);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+
+  .panel-emoji { font-size: 32px; line-height: 1; }
+
+  .panel-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--black);
+    text-align: center;
+    padding: 0 5px;
+    line-height: 1.3;
+  }
+
+  .panel-canvas {
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    display: block;
+  }
+
+  .scratch-hint {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: #bbb;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  /* ── RESULT BOX ── */
+  .result-box { display: none; }
+
+  .result-box.show {
+    display: block;
+    border-radius: 12px;
+    padding: 20px 18px;
+    text-align: center;
+    margin-bottom: 16px;
+    border: 2px solid var(--black);
+    background: linear-gradient(135deg, #fff5fb 0%, #f8f0ff 100%);
+  }
+
+  .result-win-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--hot);
+    margin-bottom: 6px;
+  }
+
+  .result-prize-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 900;
+    font-style: italic;
+    color: var(--black);
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+
+  .result-note {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    font-weight: 400;
+    color: #555;
+    line-height: 1.65;
+    margin-bottom: 18px;
+    max-width: 340px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .btn-claim {
+    display: inline-block;
+    background: linear-gradient(90deg, var(--hot) 0%, var(--purple) 100%);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 13px 28px;
+    border-radius: 8px;
+    border: 2px solid var(--black);
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .result-loss-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 900;
+    font-style: italic;
+    color: var(--black);
+    margin-bottom: 8px;
+  }
+
+  .result-note-loss {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: #666;
+    line-height: 1.65;
+    margin-bottom: 18px;
+    max-width: 340px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .btn-playlist {
+    display: inline-block;
+    background: var(--black);
+    color: var(--cream);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 12px 22px;
+    border-radius: 8px;
+    border: 2px solid var(--black);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  /* ── FOOTER ── */
+  .poster-footer {
+    background: var(--black);
+    border: 3px solid var(--black);
+    border-top: none;
+    border-radius: 0 0 20px 20px;
+    padding: 18px 20px 20px;
+  }
+
+  .footer-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .prizes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .prize-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 10px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.09);
+    text-align: center;
+    aspect-ratio: 1;
+  }
+
+  .prize-card-ico { font-size: 26px; line-height: 1; }
+
+  .prize-card-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.35;
+  }
+
+  .prize-card-tag {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 10px;
+    display: inline-block;
+  }
+
+  .tag-gift   { background: rgba(240,23,138,0.2); color: #f0178a; }
+  .tag-rare   { background: rgba(212,175,55,0.15); color: #d4af37; }
+  .tag-epic   { background: rgba(150,100,255,0.18); color: #b090ff; }
+  .tag-legend { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.45); }
+
+  .claim-fallback {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    color: #999;
+    line-height: 1.6;
+    margin-top: 10px;
+  }
+
+  .claim-fallback strong { color: #666; }
+
+  .panel-reveal.matched {
+    background: #fff0f8;
+    outline: 3px solid var(--hot);
+    outline-offset: -2px;
+  }
+
+  @media (max-width: 400px) {
+    .poster-top { padding: 22px 16px 20px; }
+    .insert-wrap { padding: 18px 14px 16px; }
+    .poster-footer { padding: 16px 14px; }
+    .prizes-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<div class="page">
+
+  <div class="poster-top" id="posterTop">
+    <!-- BORDER DECORATION — rendered by JS based on active option -->
+    <div id="borderDecorTop"></div>
+
+    <div class="poster-eyebrow">Kylie's Birthday Bash 2026</div>
+    <div class="poster-title">Scratch<br>&amp; Win</div>
+    <div class="poster-script" id="scriptLine">your gift is waiting...</div>
+
+    <div id="borderDecorBottom"></div>
+  </div>
+
+  <div class="perforations">
+    <div class="perf-inner" id="perfRow1"></div>
+  </div>
+
+  <div class="insert-wrap">
+    <div class="insert-label">Your scratch card · match 2 panels to win</div>
+
+    <div class="progress-row">
+      <div class="prog-dot" id="pd0"></div>
+      <div class="prog-dot" id="pd1"></div>
+      <div class="prog-dot" id="pd2"></div>
+    </div>
+
+    <div class="panels-grid">
+      <div class="panel-wrap" id="pw0">
+        <div class="panel-reveal" id="pr0"><span class="panel-emoji" id="pe0">🎁</span><span class="panel-name" id="pn0"></span></div>
+        <canvas class="panel-canvas" id="pc0"></canvas>
+      </div>
+      <div class="panel-wrap" id="pw1">
+        <div class="panel-reveal" id="pr1"><span class="panel-emoji" id="pe1">🎁</span><span class="panel-name" id="pn1"></span></div>
+        <canvas class="panel-canvas" id="pc1"></canvas>
+      </div>
+      <div class="panel-wrap" id="pw2">
+        <div class="panel-reveal" id="pr2"><span class="panel-emoji" id="pe2">🎁</span><span class="panel-name" id="pn2"></span></div>
+        <canvas class="panel-canvas" id="pc2"></canvas>
+      </div>
+    </div>
+
+    <div class="scratch-hint" id="scratchHint">Use your mouse to scratch each panel ✦</div>
+    <div class="result-box" id="resultBox"></div>
+  </div>
+
+  <div class="perforations">
+    <div class="perf-inner" id="perfRow2"></div>
+  </div>
+
+  <div class="poster-footer">
+    <div class="footer-label">what you could win</div>
+    <div class="prizes-grid">
+      <div class="prize-card">
+        <span class="prize-card-ico">🎵</span>
+        <span class="prize-card-name">Birthday Playlist</span>
+        <span class="prize-card-tag tag-gift">Gift</span>
+      </div>
+      <div class="prize-card">
+        <span class="prize-card-ico">🛠️</span>
+        <span class="prize-card-name">Treasure Chest Tool</span>
+        <span class="prize-card-tag tag-rare">Rare</span>
+      </div>
+      <div class="prize-card">
+        <span class="prize-card-ico">💌</span>
+        <span class="prize-card-name">Start Here Template</span>
+        <span class="prize-card-tag tag-rare">Rare</span>
+      </div>
+      <div class="prize-card">
+        <span class="prize-card-ico">🎉</span>
+        <span class="prize-card-name">50% Off Party Bag</span>
+        <span class="prize-card-tag tag-epic">Epic</span>
+      </div>
+      <div class="prize-card">
+        <span class="prize-card-ico">🏆</span>
+        <span class="prize-card-name">Free Skool Month</span>
+        <span class="prize-card-tag tag-epic">Epic</span>
+      </div>
+      <div class="prize-card">
+        <span class="prize-card-ico">💰</span>
+        <span class="prize-card-name">Full Treasure Chest</span>
+        <span class="prize-card-tag tag-legend">Legendary</span>
+      </div>
+      <div class="prize-card" style="grid-column: 1 / -1; aspect-ratio: unset; padding: 14px 10px; flex-direction: row; gap: 12px; justify-content: center;">
+        <span class="prize-card-ico">🎤</span>
+        <span class="prize-card-name">Personalised Strategy Voice Note from Kylie</span>
+        <span class="prize-card-tag tag-legend">Legendary</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const EMAIL   = 'hello@kyliekelly.com';
+const SPOTIFY = 'https://open.spotify.com/playlist/2JWEoCvnqZwFeG5NakMDMD?si=j50bRyldQta_bZXg_gTW3g';
+const TOOL_URL= 'https://the-kyliekelly.github.io/audience-growth-strategy-finder/';
+
+const PRIZES = [
+  {
+    id:'playlist', emoji:'🎵', short:'Birthday Playlist',
+    name:"Kylie's Birthday Playlist",
+    note:"I am SO excited you got the playlist! This one is full of all the feel-good bangers I genuinely play when I need a boost. Think Taylor, a little pop, a little throwback... the kind of music that makes you want to open your laptop and actually do the thing. Press play the next time you're working on something fun. You deserve it. 🎂",
+    weight:35, claimable:false, link:SPOTIFY
+  },
+  {
+    id:'tool', emoji:'🛠️', short:'Treasure Chest Tool',
+    name:"June Treasure Chest Tool Access",
+    note:"You got the June tool and honestly, this one is so good. The Audience Growth Strategy Finder is going to help you get so clear on exactly where to focus your energy to grow your list. Head through the link and have a play. I think you're going to love it.",
+    weight:25, claimable:true, qty:10, link:TOOL_URL
+  },
+  {
+    id:'template', emoji:'💌', short:'Email Template',
+    name:"Start Here Email Template + Training",
+    note:"Your Start Here sequence is one of the most important things you can have in place for your email list, and you just won the exact template and training I use to build mine. This is going to save you so much time and guesswork. I can't wait for you to get it into your account.",
+    weight:20, claimable:true, qty:10
+  },
+  {
+    id:'partybag', emoji:'🎉', short:'Party Bag',
+    name:"50% Off the Premium Party Bag",
+    note:"Half price on the premium birthday bundle. That is a proper treat and I love that it landed on you. Hit the button below, send me a note and I'll get your discount code over to you straight away. Happy birthday to us both! 🥂",
+    weight:12, claimable:true, qty:2
+  },
+  {
+    id:'skool', emoji:'🏆', short:'Free Skool Month',
+    name:"Free Month of Premium Skool Membership",
+    note:"A whole free month inside Premium Email Marketing Skool! I am genuinely excited for you to get in there. You'll have access to all the tools, trainings and the community. Send me a note below and I'll get you set up right away.",
+    weight:5, claimable:true, qty:5
+  },
+  {
+    id:'chest', emoji:'💰', short:'Full Treasure Chest',
+    name:"The Full Treasure Chest, Free",
+    note:"Okay, this is a BIG one. The full Treasure Chest one-time purchase, completely free. Every single AI tool, all in one place. I am so happy this landed with you. Send me a note and I'll get you access immediately. Enjoy every single bit of it.",
+    weight:2.5, claimable:true, qty:1
+  },
+  {
+    id:'voice', emoji:'🎤', short:'Voice Note from Kylie',
+    name:"Personalised Strategy Voice Note",
+    note:"You got the rarest prize on the card and I genuinely mean it when I say I am honoured. Send me a short note below telling me where you're at in your business and where you feel stuck, and I will record a personal voice note back with my honest take on your next best move. This one is just for you.",
+    weight:0.5, claimable:true, qty:1
+  }
+];
+
+let pool = PRIZES.map(p=>({...p}));
+let card = [];
+let panelDone = [false,false,false];
+let scratchedCount = 0;
+let resultShown = false;
+
+function weightedPick(){
+  const total = pool.reduce((s,p)=>s+p.weight,0);
+  let r = Math.random()*total;
+  for(const p of pool){ r-=p.weight; if(r<=0) return p; }
+  return pool[pool.length-1];
+}
+
+function generateCard(savedResult){
+  if(savedResult && savedResult!=='__loss__'){
+    // Restore: show two matching panels of the won prize + one random
+    const won=PRIZES.find(p=>p.id===savedResult)||PRIZES[0];
+    const other=weightedPick();
+    card=[won, won, other];
+  } else if(savedResult==='__loss__'){
+    // Restore a loss: three different prizes
+    const p0=weightedPick();
+    let p1=weightedPick(), t=0;
+    while(p1.id===p0.id && t++<20) p1=weightedPick();
+    let p2=weightedPick(), t2=0;
+    while((p2.id===p0.id||p2.id===p1.id) && t2++<20) p2=weightedPick();
+    card=[p0,p1,p2];
+  } else {
+    const p0=weightedPick();
+    let p1=weightedPick(), tries=0;
+    while(p1.id!==p0.id && tries++<80) p1=weightedPick();
+    if(tries>=80) p1={...p0};
+    const p2=weightedPick();
+    card=[p0,p1,p2];
+  }
+  for(let i=0;i<3;i++){
+    document.getElementById('pe'+i).textContent=card[i].emoji;
+    document.getElementById('pn'+i).textContent=card[i].short;
+  }
+}
+
+function buildPerf(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  const count=18;
+  for(let i=0;i<count;i++){
+    const h=document.createElement('div');
+    h.className='perf-hole';
+    el.appendChild(h);
+  }
+}
+
+function buildBorderDecor(){
+  // TOP decoration: alternating gold gems + white dots row
+  const top=document.getElementById('borderDecorTop');
+  top.className='border-gems';
+  const items=['gem-gold','gem-white','gem-gold','gem-white','gem-gold','gem-white','gem-gold','gem-white','gem-gold','gem-white','gem-gold'];
+  items.forEach((cls,i)=>{
+    if(i>0){const l=document.createElement('div');l.className='gem-line';top.appendChild(l);}
+    const g=document.createElement('div');
+    g.className='border-gem '+cls;
+    top.appendChild(g);
+  });
+
+  // BOTTOM decoration: star row
+  const bot=document.getElementById('borderDecorBottom');
+  bot.className='border-stars';
+  const stars=['✦','✧','✦','✧','✦','✧','✦','✧','✦','✧','✦'];
+  stars.forEach(s=>{
+    const span=document.createElement('span');
+    span.className='border-star';
+    span.textContent=s;
+    bot.appendChild(span);
+  });
+}
+
+function initCanvas(i){
+  const canvas=document.getElementById('pc'+i);
+  const wrap=document.getElementById('pw'+i);
+  const rect=wrap.getBoundingClientRect();
+  const W=rect.width||140, H=rect.height||140;
+  canvas.width=W; canvas.height=H;
+  const ctx=canvas.getContext('2d');
+
+  // Light creamy gold dot-paper base
+  const goldBase = '#f8eaa0';
+  ctx.fillStyle = goldBase;
+  ctx.fillRect(0, 0, W, H);
+
+  // Very soft centre glow
+  const wash = ctx.createRadialGradient(W*0.5, H*0.5, 0, W*0.5, H*0.5, W*0.65);
+  wash.addColorStop(0, 'rgba(255,252,210,0.5)');
+  wash.addColorStop(1, 'rgba(220,190,60,0.08)');
+  ctx.fillStyle = wash;
+  ctx.fillRect(0, 0, W, H);
+
+  // Dot grid — very light dots on creamy gold
+  const spacing = Math.round(W / 9);
+  const dotR    = Math.round(spacing * 0.14);
+  for(let row = spacing/2; row < H + spacing; row += spacing){
+    for(let col = spacing/2; col < W + spacing; col += spacing){
+      const jx = (Math.random()-0.5)*1.2;
+      const jy = (Math.random()-0.5)*1.2;
+      ctx.beginPath();
+      ctx.arc(col+jx, row+jy, dotR, 0, Math.PI*2);
+      ctx.fillStyle = (Math.random()>0.4) ? 'rgba(200,165,20,0.18)' : 'rgba(255,255,220,0.55)';
+      ctx.fill();
+    }
+  }
+
+  // SCRATCH HERE — hot pink, easy to read
+  const fs = Math.round(W*0.082);
+  ctx.font = `400 ${fs}px Inter, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  // soft white halo for legibility
+  ctx.fillStyle = 'rgba(255,255,255,0.6)';
+  ctx.fillText('SCRATCH', W/2+1, H/2-fs*0.8+1);
+  ctx.fillText('HERE', W/2+1, H/2+fs*0.8+1);
+  // pink text
+  ctx.fillStyle = '#e0178a';
+  ctx.fillText('SCRATCH', W/2, H/2-fs*0.8);
+  ctx.fillText('HERE', W/2, H/2+fs*0.8);
+
+  ctx.globalCompositeOperation='destination-out';
+  let isDown=false, lastX, lastY, revealed=false;
+  const radius=Math.round(W*0.18);
+
+  function getXY(e){
+    const r=canvas.getBoundingClientRect();
+    const sx=canvas.width/r.width, sy=canvas.height/r.height;
+    if(e.touches) return{x:(e.touches[0].clientX-r.left)*sx,y:(e.touches[0].clientY-r.top)*sy};
+    return{x:(e.clientX-r.left)*sx,y:(e.clientY-r.top)*sy};
+  }
+  function scratch(x,y){
+    ctx.beginPath(); ctx.arc(x,y,radius,0,Math.PI*2); ctx.fill();
+    if(lastX!==undefined){
+      ctx.beginPath(); ctx.lineWidth=radius*2; ctx.lineCap='round';
+      ctx.moveTo(lastX,lastY); ctx.lineTo(x,y); ctx.stroke();
+    }
+    lastX=x; lastY=y; checkReveal();
+  }
+  function checkReveal(){
+    if(revealed) return;
+    const d=ctx.getImageData(0,0,canvas.width,canvas.height).data;
+    let t=0;
+    for(let k=3;k<d.length;k+=4) if(d[k]<80) t++;
+    if(t/(canvas.width*canvas.height)>0.45){
+      revealed=true;
+      canvas.style.transition='opacity 0.4s ease';
+      canvas.style.opacity='0';
+      onPanelRevealed(i);
+    }
+  }
+
+  canvas.addEventListener('mousedown',e=>{if(panelDone[i]) return; isDown=true; const p=getXY(e); scratch(p.x,p.y);});
+  canvas.addEventListener('mousemove',e=>{if(!isDown||panelDone[i]) return; const p=getXY(e); scratch(p.x,p.y);});
+  canvas.addEventListener('mouseup',()=>{isDown=false; lastX=lastY=undefined;});
+  canvas.addEventListener('mouseleave',()=>{isDown=false; lastX=lastY=undefined;});
+  canvas.addEventListener('touchstart',e=>{if(panelDone[i]) return; e.preventDefault(); isDown=true; const p=getXY(e); scratch(p.x,p.y);},{passive:false});
+  canvas.addEventListener('touchmove',e=>{if(!isDown||panelDone[i]) return; e.preventDefault(); const p=getXY(e); scratch(p.x,p.y);},{passive:false});
+  canvas.addEventListener('touchend',()=>{isDown=false; lastX=lastY=undefined;});
+}
+
+function onPanelRevealed(i){
+  if(panelDone[i]) return;
+  panelDone[i]=true;
+  scratchedCount++;
+  document.getElementById('pd'+i).classList.add('done');
+  if(scratchedCount===3&&!resultShown){
+    resultShown=true;
+    document.getElementById('scratchHint').style.display='none';
+    setTimeout(showResult,500);
+  }
+}
+
+function showResult(winId){
+  // if winId passed we're restoring from storage, otherwise derive from card
+  let win=null;
+  if(winId==='__loss__'){
+    win=null;
+  } else if(winId){
+    win=PRIZES.find(p=>p.id===winId)||null;
+  } else {
+    const [p0,p1,p2]=card;
+    if(p0.id===p1.id) win=p0;
+    else if(p1.id===p2.id) win=p1;
+    else if(p0.id===p2.id) win=p0;
+    // persist result
+    try{ localStorage.setItem('bday_result', win ? win.id : '__loss__'); }catch(e){}
+  }
+
+  const box=document.getElementById('resultBox');
+  box.className='result-box show';
+
+  if(win){
+    const matched=[0,1,2].filter(i=>card[i]&&card[i].id===win.id);
+    matched.forEach(i=>document.getElementById('pr'+i).classList.add('matched'));
+
+    const poolPrize=pool.find(p=>p.id===win.id);
+    if(poolPrize&&poolPrize.qty!==undefined){
+      poolPrize.qty--;
+      if(poolPrize.qty<=0) pool=pool.filter(p=>p.id!==win.id);
+    }
+
+    const emailFallback=`<p class="claim-fallback">No email app? Just send an email to <strong>${EMAIL}</strong> with your prize in the subject line and we'll sort it for you.</p>`;
+
+    let actionBtn='';
+    if(!win.claimable){
+      actionBtn=`<a class="btn-claim" href="${win.link}" target="_blank">Open Playlist →</a>`;
+    } else if(win.id==='tool'){
+      actionBtn=`<a class="btn-claim" href="${win.link}" target="_blank">Access Your Tool →</a>`;
+    } else {
+      const subj=encodeURIComponent('Birthday Bash Prize: '+win.name);
+      const body=encodeURIComponent('Hi Kylie!\n\nI just scratched my Birthday Bash card and won:\n'+win.name+'\n\nI\'d love to claim my prize!\n\nThanks so much 🎂');
+      actionBtn=`<a class="btn-claim" href="mailto:${EMAIL}?subject=${subj}&body=${body}">Claim My Prize →</a>${emailFallback}`;
+    }
+
+    box.innerHTML=
+      `<div class="result-win-eyebrow">🎉 You matched! You won!</div>`+
+      `<div class="result-prize-name">${win.name}</div>`+
+      `<p class="result-note">${win.note}</p>`+
+      actionBtn;
+
+    if(!winId) fireConfetti();
+  } else {
+    box.innerHTML=
+      `<div class="result-loss-title">So close... no match this time!</div>`+
+      `<p class="result-note-loss">No two panels matched but you are absolutely still at the party. The birthday playlist is for everyone. Press play and enjoy every second of it.</p>`+
+      `<a class="btn-playlist" href="${SPOTIFY}" target="_blank">🎵 Open the Birthday Playlist →</a>`;
+  }
+}
+
+function fireConfetti(burst){
+  const canvas=document.getElementById('confetti-canvas');
+  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  const ctx=canvas.getContext('2d');
+  const colors=['#f0178a','#e8194f','#d4af37','#ffffff','#b44dd4','#ffd700','#f5e8d0','#ff70c0'];
+  const n=burst===false?65:180;
+  const pieces=[];
+  for(let i=0;i<n;i++){
+    pieces.push({
+      x:burst===false?Math.random()*canvas.width:canvas.width*0.5,
+      y:burst===false?-12:canvas.height*0.32,
+      vx:(Math.random()-0.5)*(burst===false?4:16),
+      vy:Math.random()*(burst===false?3:-18)+(burst===false?1:0),
+      color:colors[Math.floor(Math.random()*colors.length)],
+      w:4+Math.random()*8, h:3+Math.random()*5,
+      rot:Math.random()*Math.PI*2,
+      rotV:(Math.random()-0.5)*0.2,
+      life:1
+    });
+  }
+  let raf;
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    let any=false;
+    for(const p of pieces){
+      p.x+=p.vx; p.y+=p.vy; p.vy+=0.38; p.vx*=0.99;
+      p.rot+=p.rotV; p.life-=0.007;
+      if(p.life>0&&p.y<canvas.height+20){
+        any=true;
+        ctx.save();
+        ctx.globalAlpha=Math.min(p.life,1);
+        ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+        ctx.fillStyle=p.color;
+        ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+        ctx.restore();
+      }
+    }
+    if(any) raf=requestAnimationFrame(draw);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  cancelAnimationFrame(raf);
+  draw();
+}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  buildPerf('perfRow1');
+  buildPerf('perfRow2');
+  buildBorderDecor();
+
+  // Check if already played
+  let savedResult=null;
+  try{ savedResult=localStorage.getItem('bday_result'); }catch(e){}
+
+  if(savedResult){
+    // Restore the played card — generate a deterministic-looking card using saved win
+    // Show all panels revealed with the winning prize or a loss spread
+    generateCard(savedResult);
+    requestAnimationFrame(()=>{
+      setTimeout(()=>{
+        for(let i=0;i<3;i++){
+          const canvas=document.getElementById('pc'+i);
+          canvas.style.opacity='0';
+          document.getElementById('pd'+i).classList.add('done');
+          document.getElementById('pe'+i).textContent=card[i].emoji;
+          document.getElementById('pn'+i).textContent=card[i].short;
+        }
+        scratchedCount=3;
+        resultShown=true;
+        document.getElementById('scratchHint').style.display='none';
+        showResult(savedResult);
+      },150);
+    });
+  } else {
+    generateCard();
+    requestAnimationFrame(()=>{
+      setTimeout(()=>{
+        for(let i=0;i<3;i++) initCanvas(i);
+        fireConfetti(false);
+      },150);
+    });
+  }
+});
+</script>
+</body>
+</html>
